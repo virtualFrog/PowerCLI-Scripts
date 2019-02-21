@@ -22,11 +22,13 @@
   The script log file stored in <script-dir>/Set-VMTagFromNotes.log
  
 .NOTES
-  Version:          1.1
-  Author:           Dario Dörflinger
+  Version:          1.2
+  Author:           Dario Doerflinger (@virtual_frog)
   Creation Date:    19.02.2019
   Purpose/Change:   Initial script development
-                    Added function to check tag category existance
+                    (1.1)Added function to check tag category existance
+                    (a) Bugfix in Connect-VMwareServer Function
+                    (1.2) Bugfixes and Log improvements
  
  
 .EXAMPLE
@@ -57,7 +59,7 @@ Import-Module PSLogging
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
  
 #Script Version
-$sScriptVersion = '1.1'
+$sScriptVersion = '1.2'
  
 #Log File Info
 $sLogPath = $PSScriptRoot
@@ -75,8 +77,11 @@ Function Connect-VMwareServer {
     Process {
         Try {
             $oCred = Get-Credential -Message 'Enter credentials to connect to vCenter Server'
+            Connect-VIServer -Server $VMServer -Credential $oCred -ErrorAction Stop | Out-Null
+
+            #Use the below to automate the login with a VI Credential File
             #$oCred = Get-VICredentialStoreItem -File "c:\Set-Resourcepool\login.creds"
-            Connect-VIServer -Server $VMServer -User $oCred.User -Password $oCred.password -ErrorAction Stop | Out-Null
+            #Connect-VIServer -Server $VMServer -User $oCred.User -Password $oCred.password -ErrorAction Stop | Out-Null
         }
  
         Catch {
@@ -133,7 +138,7 @@ Function Test-TagCategory {
  
         Catch {
             Write-LogInfo -LogPath $sLogFile -Message "Tag Category [$CategoryToCheck] did not exist. Creating it now..."
-            New-TagCategory -Name $CategoryToCheck -Cardinality "Multiple" -Description "Category for all converted VM Notes tags" -Confirm:$false
+            New-TagCategory -Name $CategoryToCheck -Cardinality "Multiple" -Description "Category for all converted VM Notes tags" -Confirm:$false | Out-Null
         }
     }
  
@@ -163,30 +168,32 @@ Function New-TagsFromVMNotes {
         
             if (($notesInfo -eq "") -or ($null -eq $notesInfo)) {
                 Write-LogInfo -LogPath $sLogFile -Message "VM [$currentVM] does not have any Notes..."
-                Write-Host -ForegroundColor green "$($currentVM) does not have any notes"
+                Write-Host -ForegroundColor yellow "$($currentVM) does not have any notes"
             }
             else {
                 try {
                     $tagToSet = get-tag -Name $notesInfo -ErrorAction Stop
                 }
                 catch {
-                    $tagToSet = New-Tag -Name $notesInfo -Category $tagCategory -Confirm:$false
+                    $tagToSet = New-Tag -Name $notesInfo -Category $tagCategory -Confirm:$false | Out-Null
                 }
                 finally {
                     Write-LogInfo -LogPath $sLogFile -Message "Assigning Tag $($tagToSet) to VM $($currentVM)."
-                    New-TagAssignment -Tag $tagToSet -Entity $currentVm -Confirm:$false
+                    Write-Host -ForegroundColor green "Assigning Tag $($tagToSet) to VM $($currentVM)."
+                    New-TagAssignment -Tag $tagToSet -Entity $currentVm -Confirm:$false | Out-Null
                 }
             }
             $i++
         }
- 
-        End {
-            If ($?) {
-                Write-LogInfo -LogPath $sLogFile -Message 'Completed Successfully.'
-                Write-LogInfo -LogPath $sLogFile -Message ' '
-            }
+    }
+
+    End {
+        If ($?) {
+            Write-LogInfo -LogPath $sLogFile -Message 'Completed Successfully.'
+            Write-LogInfo -LogPath $sLogFile -Message ' '
         }
     }
+    
 }
  
 #-----------------------------------------------------------[Execution]------------------------------------------------------------
