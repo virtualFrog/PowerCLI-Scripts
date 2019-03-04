@@ -258,6 +258,10 @@ Function Move-VMsIntoResoucePoolsBasedOnTag {
                 Test-ResourcePool $_.Tag.Name $currentCluster
                 Write-LogInfo -LogPath $sLogFile -Message "Moving VM $($_.Entity.Name) into resource pool $($_.Tag.Name) in Cluster $($currentCluster)..." 
                 (Get-ResourcePool -Name $_.Tag.Name -Location $currentCluster).ExtensionData.MoveIntoResourcePool((get-vm -Name $_.Entity.Name).ExtensionData.MoRef)
+                If ($?) {
+                    Write-LogInfo -LogPath $sLogFile -Message "Completed moving VM $($_.Entity.Name) into resource pool $($_.Tag.Name) in Cluster $($currentCluster) Successfully."
+                    Write-LogInfo -LogPath $sLogFile -Message ' '
+                }
             }
             $i++
         }
