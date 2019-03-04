@@ -2,7 +2,7 @@
 .SYNOPSIS
   This script will help you automate the placement/movement of VMs in resource pools based on a tag.
   
-  The original implementation uses the tag category "ResourcePool". The tags in this category can only be applied to Virtual Machine objects and must be unique (One tag per object)
+  The original implementation uses the tag category "ResourcePool". The tags in this category can only be applied to Virtual Machine objects and must be unique (One tag per object). If you need to use another Tag feel free to change the category variable
  
   To use this script automatically please use the following code to produce a file with the password:
  
@@ -69,6 +69,9 @@ $sLogPath = $PSScriptRoot
 $sLogName = "Move-VMsIntoResoucePoolsBasedOnTag.log"
 $sLogFile = Join-Path -Path $sLogPath -ChildPath $sLogName
  
+#Default Tag Category name
+$defaultTagCategoryName = "ResourcePool"
+
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 Function Connect-VMwareServer {
     Param ([Parameter(Mandatory = $true)][string]$VMServer)
@@ -168,7 +171,7 @@ Function Test-Tag {
  
         Catch {
             Write-LogInfo -LogPath $sLogFile -Message "Tag [$TagToCheck] did not exist. Creating it now..."
-            $returningThis = New-Tag -Name $TagToCheck -Category "ResourcePool" -Description "Tag for VMs to move into corresponding Resource pool" -Confirm:$false
+            $returningThis = New-Tag -Name $TagToCheck -Category $defaultTagCategoryName -Description "Tag for VMs to move into corresponding Resource pool" -Confirm:$false
         }
     }
  
@@ -218,7 +221,7 @@ Function Set-DefaultTag {
     Process {
         $tag = Test-Tag $defaultTag
         foreach ($currentVM in Get-VM) {
-            if ($null -eq (Get-TagAssignment -Category "ResourcePool" -Entity $currentVM)) {
+            if ($null -eq (Get-TagAssignment -Category $defaultTagCategoryName -Entity $currentVM)) {
                 Write-LogInfo -LogPath $sLogFile -Message "VM [$currentVM] did not have a resource pool tag. Tagging it with [$defaultTag]..."
                 New-TagAssignment -Entity $currentVM -Tag $tag -Confirm:$false | Out-Null
             }
@@ -245,7 +248,7 @@ Function Move-VMsIntoResoucePoolsBasedOnTag {
  
     Process {
 
-        Test-TagCategory "ResourcePool"
+        Test-TagCategory $defaultTagCategoryName
         if ($null -ne $defaultTag) {
             Set-DefaultTag $defaultTag
         }
@@ -254,7 +257,7 @@ Function Move-VMsIntoResoucePoolsBasedOnTag {
         $allClusters = Get-Cluster
         foreach ($currentCluster in $allClusters) {
             Write-Progress -Activity "Moving VMs into Resource Pools" -Status ("Cluster: {0}" -f $currentCluster.Name) -PercentComplete ((100 * $i) / ($allClusters.length)) -Id 1 -ParentId 0
-            $currentCluster | Get-VM | Get-TagAssignment -Category "ResourcePool" | ForEach-Object {
+            $currentCluster | Get-VM | Get-TagAssignment -Category $defaultTagCategoryName | ForEach-Object {
                 Test-ResourcePool $_.Tag.Name $currentCluster
                 Write-LogInfo -LogPath $sLogFile -Message "Moving VM $($_.Entity.Name) into resource pool $($_.Tag.Name) in Cluster $($currentCluster)..." 
                 (Get-ResourcePool -Name $_.Tag.Name -Location $currentCluster).ExtensionData.MoveIntoResourcePool((get-vm -Name $_.Entity.Name).ExtensionData.MoRef)
