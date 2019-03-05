@@ -2,7 +2,7 @@
 .SYNOPSIS
   This script will help you automate the placement/movement of VMs in resource pools based on a tag.
 .DESCRIPTION
-  By reading out the assigned resource pool tags the VMs are places into resource pools with the same name
+  By reading out the assigned resource pool tags the VMs are placed into resource pools with the same name
 .NOTES
   Version:          1.0
   Author:           Dario Doerflinger (@virtual_frog)
@@ -43,7 +43,7 @@ Param (
  
 #---------------------------------------------------------[Initialisations]--------------------------------------------------------
  
-#Set Error Action to Silently Continue
+#Set Error Action to Stop
 $ErrorActionPreference = 'Stop'
  
 #Import Module for Logging
