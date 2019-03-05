@@ -1,41 +1,31 @@
-<#
+<# 
 .SYNOPSIS
   This script will help you automate the placement/movement of VMs in resource pools based on a tag.
-  
-  The original implementation uses the tag category "ResourcePool". The tags in this category can only be applied to Virtual Machine objects and must be unique (One tag per object). If you need to use another Tag feel free to change the category variable
- 
-  To use this script automatically please use the following code to produce a file with the password:
- 
-  New-VICredentialStoreItem -User $user_name -Password $user_password_decrypted -Host "Somethingsomething" -File "$file_location\login.creds"
- 
- .DESCRIPTION
+.DESCRIPTION
   By reading out the assigned resource pool tags the VMs are places into resource pools with the same name
- 
-.PARAMETER vCenter
-  The vCenter to connect to
-
-.PARAMETER DefaultTag
-  Parameter to tag VMs that have no tags assigned
-  Default: $null
- 
-.INPUTS
-  None
- 
-.OUTPUTS Log File
-  The script log file stored in <script-dir>/Move-VMsIntoResoucePoolsBasedOnTag.log
- 
 .NOTES
   Version:          1.0
   Author:           Dario Doerflinger (@virtual_frog)
   Creation Date:    04.04.2019
   Purpose/Change:   Initial script development
 
- 
- 
+The original implementation uses the tag category "ResourcePool". The tags in this category can only be applied to Virtual Machine objects and must be unique (One tag per object). If you need to use another Tag feel free to change the category variable
+To use this script automatically please use the following code to produce a file with the password:
+New-VICredentialStoreItem -User $user_name -Password $user_password_decrypted -Host "Somethingsomething" -File "$file_location\login.creds"
+.LINK
+    https://virtualfrog.wordpress.com
+.PARAMETER vCenter
+  The vCenter to connect to
+.PARAMETER DefaultTag
+  Parameter to tag VMs that have no tags assigned
+  Default: $null
+.INPUTS
+  None
+.OUTPUTS
+  The script log file stored in <script-dir>/Move-VMsIntoResoucePoolsBasedOnTag.log
 .EXAMPLE
   ./Move-VMsIntoResoucePoolsBasedOnTag.ps1 -vCenter yourvcenter.yourdomain.com
   Will iterate through each cluster and move VMs into resource pools
-
 .EXAMPLE
   ./Move-VMsIntoResoucePoolsBasedOnTag.ps1 -vCenter yourvcenter.yourdomain.com -DefaultTag "2_Normal"
   Will first check if there are VMs without assigned Tags from the "ResourcePool" Category and assign the "2_Normal" Tag (will be created if it does not exist)
