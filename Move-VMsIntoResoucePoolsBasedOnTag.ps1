@@ -205,7 +205,7 @@ Function Set-DefaultTag {
     Param ([Parameter(Mandatory = $true)][string]$defaultTag)
  
     Begin {
-        Write-LogInfo -LogPath $sLogFile -Message "Checking if all tags have a resource pool tag and if one does not have one attach the tag [$defaultTag] to it ..."
+        Write-LogInfo -LogPath $sLogFile -Message "Checking if all VMs have a resource pool tag and if one does not then attach the tag [$defaultTag] to it ..."
     }
  
     Process {
