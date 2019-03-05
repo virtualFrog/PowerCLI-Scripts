@@ -214,6 +214,10 @@ Function Set-DefaultTag {
             if ($null -eq (Get-TagAssignment -Category $defaultTagCategoryName -Entity $currentVM)) {
                 Write-LogInfo -LogPath $sLogFile -Message "VM [$currentVM] did not have a resource pool tag. Tagging it with [$defaultTag]..."
                 New-TagAssignment -Entity $currentVM -Tag $tag -Confirm:$false | Out-Null
+                If ($?) {
+                    Write-LogInfo -LogPath $sLogFile -Message "VM [$currentVM] succesfully tagged with [$defaultTag]."
+                    Write-LogInfo -LogPath $sLogFile -Message ' '
+                }
             }
         }
         
