@@ -19,7 +19,7 @@ Param(
 # Change to default email address you would like to receive emails
     [Array]$To = @("email@email.com","email2@email.com"),
 # Change to default Report Filename you like
-    [string]$Attachment = "$env:temp\OrphanedFileReport-"+(Get-Date �f "yyyy-MM-dd")+".csv"
+    [string]$Attachment = "$env:temp\OrphanedFileReport-"+(Get-Date -f "yyyy-MM-dd")+".csv"
 )
 
 function Get-VmwOrphan{
@@ -168,7 +168,7 @@ Connect-VIServer $vCenter -WarningAction SilentlyContinue | Out-Null
 Write-Host "Connected to $vCenter. Starting script"
 
 
-$bodyh = (Get-Date �f "yyyy-MM-dd HH:mm:ss") + "  -  the following orphaned files were found on Datastores. `n"
+$bodyh = (Get-Date -f "yyyy-MM-dd HH:mm:ss") + "  -  the following orphaned files were found on Datastores. `n"
 $body = Get-Datastore | Get-VmwOrphan
 $body | Export-Csv "$Attachment" -NoTypeInformation -UseCulture
 $body = $bodyh + ($body | Out-String)
