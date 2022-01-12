@@ -1,7 +1,7 @@
 ##################################################################################
 # Script:           Get-Empty-LUNs.ps1
 # Datum:            07.10.2016
-# Author:           Bechtle Schweiz AG (c) 2016
+# Author:           Dario Doerflinger (c) 2016
 # Version:          1.0
 # History:          Initial Script
 ##################################################################################
