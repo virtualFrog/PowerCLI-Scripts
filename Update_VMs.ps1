@@ -1,5 +1,5 @@
 #####################################################################################################################
-# Author:           Bechtle Schweiz AG, Dario Doerflinger (c) 2015-2018
+# Author:           Dario Doerflinger (c) 2015-2018
 # Skript:           Update_VMs_1.0.5.ps1
 # Datum:            11.10.2017
 # Version:          1.0.5
