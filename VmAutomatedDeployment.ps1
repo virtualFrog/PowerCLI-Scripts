@@ -3,7 +3,7 @@
 # Description:     For simple virtual machine container provisioning use only. 
 # Version:         1.2
 # Date:            02.02.2017
-# Author:          Bechtle Steffen Schweiz AG
+# Author:          Dario Doerflinger
 # History:         02.02.2017 - First tested release
 #                  19.07.2017 - Replaced Portgroup for Networkname, diskformat and resource pool based on hostname   
 #                  19.07.2017 - Added return value: MAC Address of created VM as requested by customer 
