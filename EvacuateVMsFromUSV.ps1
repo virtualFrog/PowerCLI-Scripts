@@ -3,7 +3,7 @@
 # Description:     Evacuate all VMs from one site in a active-active cluster and shut down the Hosts
 # Version:         1.0
 # Date:            20.07.2017
-# Author:          Bechtle Steffen Schweiz AG | Dario Doerflinger (virtualfrog.wordpress.com)
+# Author:          Dario Doerflinger (https://soultec.ch/blog)
 # History:         20.07.2017 - First tested release 
 ############################################################################################
 
@@ -12,7 +12,7 @@
 param (
     [string]$SiteToShutdown # Identifier of site
 )
-$vCenter_server = "bezhvcs03.bechtlezh.ch"
+$vCenter_server = "randomName.randomdomain.com"
 # clear global ERROR variable
 $Error.Clear()
 
